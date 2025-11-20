@@ -1,13 +1,14 @@
 <?php
-$servername = "localhost";
-$username = "root";        // default user XAMPP
-$password = "";            // default kosong
-$database = "habit_tracking";
-$port = 3307;              // tambahkan ini
+$host = "sql205.infinityfree.com"; // MySQL Hostname 
+$user = "if0_40408592";            // MySQL Username
+$pass = "66H9EGndoRLcjQe";         // MySQL Password
+$db   = "if0_40408592_habittracking"; // Database name 
+$port = 3306;
 
-$conn = new mysqli($servername, $username, $password, $database, $port);
+$conn = new mysqli($host, $user, $pass, $db, $port);
 
 if ($conn->connect_error) {
-  die("Koneksi gagal: " . $conn->connect_error);
+    die("Database Connection Failed: " . $conn->connect_error);
 }
 ?>
+
