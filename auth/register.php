@@ -1,19 +1,36 @@
-<?php
+<?php   
 include 'db.php';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $username = trim($_POST['username']);
-  $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-
-  $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("ss", $username, $password);
-
-  if ($stmt->execute()) {
-    header("Location: index.php");
-    exit;
-  } else {
-    $error = "Gagal register, mungkin username sudah dipakai!";
+  $password_plain = $_POST['password'];
+  
+  //Cek apakah sudah ada usernamenya
+  $check = $conn->prepare("SELECT id FROM users WHERE username = ?");
+  $check->bind_param("s", $username);
+  $check->execute();
+  $check->store_result();
+   
+  if ($check->num_rows > 0){
+      //username sudah ada di db, munculkan popup
+      echo "<script>alert('Anda sudah pernah daftar!'); window.location='index.php';</script>";
+      exit;
   }
+    
+    //kalau belum ada, lanjut insert
+    $password_hashed = password_hash($password_plain, PASSWORD_BCRYPT);
+    
+    $sql = "INSERT INTO users (username, password) VALUES (?,?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $username, $password_hashed);
+    
+    if ($stmt->execute()) {
+        header("Location: home.php");
+        exit;
+    } else {
+        $error = "Gagal register!";
+    }
+
 }
 ?>
 <!DOCTYPE html>
